@@ -1,0 +1,22 @@
+diff --git a/zbuild.h b/zbuild.h
+index d550b4c5..a26a7d7d 100644
+--- a/zbuild.h
++++ b/zbuild.h
+@@ -3,7 +3,7 @@
+ 
+ #define _POSIX_SOURCE 1  /* fileno */
+ #ifndef _POSIX_C_SOURCE
+-#  define _POSIX_C_SOURCE 200809L /* snprintf, posix_memalign, strdup */
++//#  define _POSIX_C_SOURCE 200809L /* snprintf, posix_memalign, strdup */
+ #endif
+ #ifndef _ISOC11_SOURCE
+ #  define _ISOC11_SOURCE 1 /* aligned_alloc */
+@@ -196,7 +196,7 @@
+ #  define UNLIKELY(x)           x
+ #endif /* (un)likely */
+ 
+-#if defined(HAVE_ATTRIBUTE_ALIGNED)
++#if defined(HAVE_ATTRIBUTE_ALIGNED) || defined(__MVS__)
+ #  define ALIGNED_(x) __attribute__ ((aligned(x)))
+ #elif defined(_MSC_VER)
+ #  define ALIGNED_(x) __declspec(align(x))

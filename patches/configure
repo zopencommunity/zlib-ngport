@@ -1,0 +1,13 @@
+diff --git a/configure b/configure
+index 93090bab..31c89d08 100755
+--- a/configure
++++ b/configure
+@@ -49,6 +49,8 @@ case "${ARCH}" in
+     ;;
+ esac
+ 
++ARCH=s390x
++
+ # destination name for windows import library
+ IMPORTLIB=
+ 

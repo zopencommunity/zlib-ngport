@@ -1,0 +1,56 @@
+diff --git a/Makefile.in b/Makefile.in
+index cc3c5a4a..85f7c600 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -264,44 +264,44 @@ endif
+ endif
+ 
+ example$(EXE): example.o $(TESTOBJG) $(STATICLIB)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ minigzip$(EXE): minigzip.o $(TESTOBJG) $(STATICLIB)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(TESTOBJG) $(TEST_LIBS) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ minigzipsh$(EXE): minigzip.o $(PIC_TESTOBJG) $(SHAREDTARGET)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ minigzip.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ 
+ examplesh$(EXE): example.o $(PIC_TESTOBJG) $(SHAREDTARGET)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example.o $(PIC_TESTOBJG) $(SHAREDLIB) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ makefixed$(EXE): makefixed.o $(STATICLIB)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makefixed.o $(TEST_LIBS) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makefixed.o $(TEST_LIBS) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ maketrees$(EXE): maketrees.o $(STATICLIB)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ maketrees.o $(TEST_LIBS) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ maketrees.o $(TEST_LIBS) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif
+ 
+ makecrct$(EXE): makecrct.o $(STATICLIB)
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct.o $(TEST_LIBS) $(LDSHAREDLIBC)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ makecrct.o $(TEST_LIBS) $(LDSHAREDLIBC) $(LDLIBS)
+ ifneq ($(STRIP),)
+ 	$(STRIP) $@
+ endif

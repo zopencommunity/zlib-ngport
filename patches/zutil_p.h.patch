@@ -1,0 +1,22 @@
+diff --git a/zutil_p.h b/zutil_p.h
+index caec91d5..f80911c4 100644
+--- a/zutil_p.h
++++ b/zutil_p.h
+@@ -5,7 +5,7 @@
+ #ifndef ZUTIL_P_H
+ #define ZUTIL_P_H
+ 
+-#if defined(__APPLE__) || defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_ALIGNED_ALLOC)
++#if defined(__APPLE__) || defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_ALIGNED_ALLOC) || defined(__MVS__)
+ #  include <stdlib.h>
+ #elif defined(__FreeBSD__)
+ #  include <stdlib.h>
+@@ -21,7 +21,7 @@ static inline void *zng_alloc(size_t size) {
+     return posix_memalign(&ptr, 64, size) ? NULL : ptr;
+ #elif defined(_WIN32)
+     return (void *)_aligned_malloc(size, 64);
+-#elif defined(__APPLE__)
++#elif defined(__APPLE__) || defined(__MVS__)
+     return (void *)malloc(size);     /* MacOS always aligns to 16 bytes */
+ #elif defined(HAVE_ALIGNED_ALLOC)
+     return (void *)aligned_alloc(64, size);
