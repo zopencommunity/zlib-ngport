@@ -1,6 +1,6 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: zlib-ng-version /ZLIB-NG_VERSION="(.*)"/ https://github.com/zlib-ng/zlib-ng.git|semver:*
-# ZLIB-NG_VERSION="2.1.6" # Specify a stable release
+# ZLIB-NG_VERSION="2.2.0" # Specify a stable release
 # export ZOPEN_STABLE_TAG="v${ZLIB-NG_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/zlib-ng/zlib-ng.git"
 export ZOPEN_STABLE_DEPS="make autoconf automake libtool perl m4 coreutils grep"
