@@ -1,0 +1,13 @@
+diff --git a/inflate.h b/inflate.h
+index 9d5c482..d24a5ce 100644
+--- a/inflate.h
++++ b/inflate.h
+@@ -13,7 +13,7 @@
+ 
+ #include "crc32.h"
+ 
+-#ifdef S390_DFLTCC_INFLATE
++#if 1
+ #  include "arch/s390/dfltcc_common.h"
+ #  define HAVE_ARCH_INFLATE_STATE
+ #endif

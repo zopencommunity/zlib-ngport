@@ -1,0 +1,179 @@
+diff --git a/arch/s390/dfltcc_detail.h b/arch/s390/dfltcc_detail.h
+index ae6001b..4539cb3 100644
+--- a/arch/s390/dfltcc_detail.h
++++ b/arch/s390/dfltcc_detail.h
+@@ -38,30 +38,6 @@ static inline void clear_bit(char *bits, int n) {
+ }
+ 
+ #define DFLTCC_FACILITY 151
+-
+-static inline int is_dfltcc_enabled(void) {
+-    uint64_t facilities[(DFLTCC_FACILITY / 64) + 1];
+-    Z_REGISTER uint8_t r0 __asm__("r0");
+-
+-    memset(facilities, 0, sizeof(facilities));
+-    r0 = sizeof(facilities) / sizeof(facilities[0]) - 1;
+-    /* STFLE is supported since z9-109 and only in z/Architecture mode. When
+-     * compiling with -m31, gcc defaults to ESA mode, however, since the kernel
+-     * is 64-bit, it's always z/Architecture mode at runtime.
+-     */
+-    __asm__ volatile(
+-#ifndef __clang__
+-                     ".machinemode push\n"
+-                     ".machinemode zarch\n"
+-#endif
+-                     "stfle %[facilities]\n"
+-#ifndef __clang__
+-                     ".machinemode pop\n"
+-#endif
+-                     : [facilities] "=Q" (facilities), [r0] "+r" (r0) :: "cc");
+-    return is_bit_set((const char *)facilities, DFLTCC_FACILITY);
+-}
+-
+ #define DFLTCC_FMT0 0
+ 
+ #define CVT_CRC32 0
+@@ -71,17 +47,6 @@ static inline int is_dfltcc_enabled(void) {
+ 
+ #define DFLTCC_SIZEOF_GDHT_V0 384
+ #define DFLTCC_SIZEOF_CMPR_XPND_V0 1536
+-static_assert(offsetof(struct dfltcc_param_v0, csb) == DFLTCC_SIZEOF_GDHT_V0, gdht_v0);
+-static_assert(sizeof(struct dfltcc_param_v0) == DFLTCC_SIZEOF_CMPR_XPND_V0, cmpr_xpnd_v0);
+-
+-static inline z_const char *oesc_msg(char *buf, int oesc) {
+-    if (oesc == 0x00)
+-        return NULL; /* Successful completion */
+-    else {
+-        sprintf(buf, "Operation-Ending-Supplemental Code is 0x%.2X", oesc);
+-        return buf;
+-    }
+-}
+ 
+ /*
+    C wrapper for the DEFLATE CONVERSION CALL instruction.
+@@ -101,12 +66,117 @@ typedef enum {
+ #define HBT_CIRCULAR (1 << 7)
+ #define DFLTCC_FN_MASK ((1 << 7) - 1)
+ 
++static_assert(offsetof(struct dfltcc_param_v0, csb) == DFLTCC_SIZEOF_GDHT_V0, gdht_v0);
++static_assert(sizeof(struct dfltcc_param_v0) == DFLTCC_SIZEOF_CMPR_XPND_V0, cmpr_xpnd_v0);
++
++static inline z_const char *oesc_msg(char *buf, int oesc) {
++    if (oesc == 0x00)
++        return NULL; /* Successful completion */
++    else {
++        sprintf(buf, "Operation-Ending-Supplemental Code is 0x%.2X", oesc);
++        return buf;
++    }
++}
++
+ /* Return lengths of high (starting at param->ho) and low (starting at 0) fragments of the circular history buffer. */
+ static inline void get_history_lengths(struct dfltcc_param_v0 *param, size_t *hl_high, size_t *hl_low) {
+     *hl_high = MIN(param->hl, HB_SIZE - param->ho);
+     *hl_low = param->hl - *hl_high;
+ }
+ 
++#ifdef __MVS__
++
++#define STREQ(a, b) (strcmp(a, b) == 0)
++
++static int is_dfltcc_enabled(void) {
++  // char facilities[(DFLTCC_FACILITY / 64 + 1) * 8];
++  unsigned long kaka[((DFLTCC_FACILITY / 64 + 1) * 8) / 8];
++  char *facilities = (char *)kaka;
++
++  char const *env = getenv("DFLTCC");
++  if (env && STREQ(env, "0"))
++    return 0;
++
++  memset(facilities, 0, sizeof kaka); // facilities);
++  register char r0 __asm__("r0") = sizeof kaka / 8 - 1;
++  /* STFLE is supported since z9-109 and only in z/Architecture mode.  When
++   * compiling with -m31, gcc defaults to ESA mode, however, since the kernel
++   * is 64-bit, it's always z/Architecture mode at runtime.  */
++  __asm__(" stfle %[kaka]\n" : [kaka] "=Q"(kaka), [r0] "+r"(r0)::"cc");
++  return is_bit_set(facilities, DFLTCC_FACILITY);
++}
++
++static dfltcc_cc dfltcc(int fn, void *param, uch **op1, size_t *len1,
++                        uch const **op2, size_t *len2, void *hist) {
++  uch *t2 = op1 ? *op1 : NULL;
++  size_t t3 = len1 ? *len1 : 0;
++  const uch *t8 = op2 ? *op2 : NULL;
++  size_t t9 = len2 ? *len2 : 0;
++  register int r0 __asm__("r0") = fn;
++  register void *r1 __asm__("r1") = param;
++  register uch *r2 __asm__("r2") = t2;
++  register size_t r3 __asm__("r3") = t3;
++  register const uch *r8 __asm__("r8") = t8;
++  register size_t r9 __asm__("r9") = t9;
++  register void *r10 __asm__("r10") = hist;
++  int cc;
++  if (op2 && len2) {
++    // y1  hexdump("dfltcc input oper-2", *op2, *len2);
++  }
++  size_t t0 = r3;
++  size_t s0 = r9;
++  __asm__ volatile( // " dc x'b939a028'\n"
++      " dfltcc 2,8,10\n"
++      " ipm %[cc]\n"
++      :
++      [r2] "+r"(r2), [r3] "+r"(r3), [r8] "+r"(r8), [r9] "+r"(r9), [cc] "=r"(cc)
++      : [r0] "r"(r0), [r1] "r"(r1), [r10] "r"(r10)
++      : "cc", "memory");
++  if (op1 && len1) {
++    // y1  hexdump("dfltcc output oper-1", *op1, *len1 - r3);
++  }
++  t3 = r3;
++  t8 = r8;
++  t9 = r9;
++
++  if (op1)
++    *op1 = t2;
++  if (len1)
++    *len1 = t3;
++  if (op2)
++    *op2 = t8;
++  if (len2)
++    *len2 = t9;
++  t2 = r2;
++  return (cc >> 28) & 3;
++}
++
++#elif
++
++static inline int is_dfltcc_enabled(void) {
++    uint64_t facilities[(DFLTCC_FACILITY / 64) + 1];
++    Z_REGISTER uint8_t r0 __asm__("r0");
++
++    memset(facilities, 0, sizeof(facilities));
++    r0 = sizeof(facilities) / sizeof(facilities[0]) - 1;
++    /* STFLE is supported since z9-109 and only in z/Architecture mode. When
++     * compiling with -m31, gcc defaults to ESA mode, however, since the kernel
++     * is 64-bit, it's always z/Architecture mode at runtime.
++     */
++    __asm__ volatile(
++#ifndef __clang__
++                     ".machinemode push\n"
++                     ".machinemode zarch\n"
++#endif
++                     "stfle %[facilities]\n"
++#ifndef __clang__
++                     ".machinemode pop\n"
++#endif
++                     : [facilities] "=Q" (facilities), [r0] "+r" (r0) :: "cc");
++    return is_bit_set((const char *)facilities, DFLTCC_FACILITY);
++}
++
++
+ /* Notify instrumentation about an upcoming read/write access to the circular history buffer. */
+ static inline void instrument_read_write_hist(struct dfltcc_param_v0 *param, void *hist) {
+     size_t hl_high, hl_low;
+@@ -213,6 +283,7 @@ static inline dfltcc_cc dfltcc(int fn, void *param,
+         *len2 = t5;
+     return (cc >> 28) & 3;
+ }
++#endif
+ 
+ #define ALIGN_UP(p, size) (__typeof__(p))(((uintptr_t)(p) + ((size) - 1)) & ~((size) - 1))
+ 

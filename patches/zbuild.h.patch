@@ -1,5 +1,5 @@
 diff --git a/zbuild.h b/zbuild.h
-index d550b4c5..a26a7d7d 100644
+index 157ab6f..f9ae46d 100644
 --- a/zbuild.h
 +++ b/zbuild.h
 @@ -3,7 +3,7 @@

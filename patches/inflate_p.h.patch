@@ -1,0 +1,13 @@
+diff --git a/inflate_p.h b/inflate_p.h
+index 179f76f..12e961e 100644
+--- a/inflate_p.h
++++ b/inflate_p.h
+@@ -9,7 +9,7 @@
+ #include "zmemory.h"
+ 
+ /* Architecture-specific hooks. */
+-#ifdef S390_DFLTCC_INFLATE
++#if 1
+ #  include "arch/s390/dfltcc_inflate.h"
+ /* DFLTCC instructions require window to be page-aligned */
+ #  define PAD_WINDOW            PAD_4096

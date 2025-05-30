@@ -1,8 +1,8 @@
 diff --git a/Makefile.in b/Makefile.in
-index cc3c5a4a..85f7c600 100644
+index 1493124..e1ffaf8 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -264,44 +264,44 @@ endif
+@@ -265,44 +265,44 @@ endif
  endif
  
  example$(EXE): example.o $(TESTOBJG) $(STATICLIB)

@@ -1,0 +1,12 @@
+diff --git a/configure b/configure
+index 3487d09..5c13171 100755
+--- a/configure
++++ b/configure
+@@ -1500,6 +1500,7 @@ fi
+ ARCHDIR='arch/generic'
+ ARCH_STATIC_OBJS=''
+ ARCH_SHARED_OBJS=''
++ARCH=s390x
+ 
+ # Set ARCH specific FLAGS
+ case "${ARCH}" in

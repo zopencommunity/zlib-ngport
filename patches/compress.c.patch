@@ -1,0 +1,13 @@
+diff --git a/compress.c b/compress.c
+index 66118e4..bb0dc84 100644
+--- a/compress.c
++++ b/compress.c
+@@ -9,7 +9,7 @@
+ /* ===========================================================================
+  *  Architecture-specific hooks.
+  */
+-#ifdef S390_DFLTCC_DEFLATE
++#if 1
+ #  include "arch/s390/dfltcc_common.h"
+ #else
+ /* Returns the upper bound on compressed data length based on uncompressed data length, assuming default settings.
