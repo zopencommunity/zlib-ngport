@@ -9,7 +9,9 @@ export ZOPEN_DEV_DEPS="make autoconf automake libtool perl m4 coreutils grep"
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="library"
 export ZOPEN_COMP=CLANG
-export ZOPEN_CONFIGURE_MINIMAL=Y     
+export ZOPEN_CONFIGURE_MINIMAL=Y
+export ZOPEN_MAKE_MINIMAL=Y
+export ZOPEN_MAKE="zopen_make"     
 export ZOPEN_EXTRA_CONFIGURE_OPTS="--static --without-crc32-vx --with-dfltcc-deflate --with-dfltcc-inflate"
 export ZOPEN_EXTRA_CPPFLAGS="-march=arch13"
 export ZOPEN_EXTRA_CFLAGS="-march=arch13"
@@ -18,6 +20,11 @@ export ZOPEN_EXTRA_CFLAGS="-march=arch13"
 zopen_pre_patch()
 {
   export CFLAGS="$CFLAGS $CPPFLAGS"
+}
+
+zopen_make()
+{
+	LDLIBS="${LIBS}" make "$@"
 }
 
 zopen_append_to_env()
