@@ -1,0 +1,13 @@
+diff --git a/test/Makefile.in b/test/Makefile.in
+index 5b45965..583de89 100644
+--- a/test/Makefile.in
++++ b/test/Makefile.in
+@@ -8,7 +8,7 @@ EXE=
+ SRCDIR=
+ SRCTOP=
+ LIBNAME=
+-TEST_LDFLAGS=-L.. ../$(LIBNAME).a
++TEST_LDFLAGS=-L.. ../$(LIBNAME).a ${LDFLAGS}
+ 
+ EMU_RUN=
+ 

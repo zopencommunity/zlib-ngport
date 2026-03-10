@@ -1,6 +1,6 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: zlib-ng-version /ZLIB_NG_VERSION="(.*)"/ https://github.com/zlib-ng/zlib-ng.git|semver:*
-ZLIB_NG_VERSION="2.2.5" # Specify a stable release
+ZLIB_NG_VERSION="2.3.3" # Specify a stable release
 export ZOPEN_STABLE_TAG="${ZLIB_NG_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/zlib-ng/zlib-ng.git"
 export ZOPEN_STABLE_DEPS="make autoconf automake libtool perl m4 coreutils grep"
@@ -10,12 +10,17 @@ export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="library"
 export ZOPEN_COMP=CLANG
 export ZOPEN_CONFIGURE_MINIMAL=Y     
-export ZOPEN_EXTRA_CONFIGURE_OPTS="--static --without-crc32-vx --zlib-compat" #TODO:--with-dfltcc-deflate --with-dfltcc-inflate
-#export ZOPEN_EXTRA_CONFIGURE_OPTS="--static --without-crc32-vx"  #TODO:--with-dfltcc-deflate --with-dfltcc-inflate
+export ZOPEN_MAKE_MINIMAL=Y
+export ZOPEN_CHECK_MINIMAL=Y
+export ZOPEN_EXTRA_CONFIGURE_OPTS="--static --without-crc32-vx"
+#export ZOPEN_EXTRA_CONFIGURE_OPTS="--static --without-crc32-vx --with-dfltcc-deflate --with-dfltcc-inflate"
+export ZOPEN_CHECK_OPTS="test"
+export ZOPEN_PROJECT_NAME="zlib-ng"
 
 zopen_pre_patch()
 {
-  export CFLAGS="$CFLAGS $CPPFLAGS -DZLIB_COMPAT=1"
+  export CFLAGS="$CFLAGS $CPPFLAGS"
+  export LDFLAGS="$LDFLAGS $LIBS"
 }
 
 zopen_append_to_env()
@@ -25,7 +30,7 @@ if [ ! -z "\$ZOPEN_IN_ZOPEN_BUILD" ]; then
   export ZOPEN_EXTRA_CFLAGS="\${ZOPEN_EXTRA_CFLAGS} -I\$PWD/include"
   export ZOPEN_EXTRA_CXXFLAGS="\${ZOPEN_EXTRA_CXXFLAGS} -I\$PWD/include"
   export ZOPEN_EXTRA_LDFLAGS="\${ZOPEN_EXTRA_LDFLAGS} -L\$PWD/lib"
-  export ZOPEN_EXTRA_LIBS="\${ZOPEN_EXTRA_LIBS} -lz"
+  export ZOPEN_EXTRA_LIBS="\${ZOPEN_EXTRA_LIBS} -lz-ng"
 fi
 ZZ
 }
